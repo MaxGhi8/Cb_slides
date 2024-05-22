@@ -1,0 +1,967 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[preview]{cb-5}
+\usepackage{mathtools}
+%\usepackage{lmodern}
+\usepackage{soul}
+\usepackage{enumitem}
+\usepackage{multimedia}
+\usepackage{hyperref}
+\usetikzlibrary{positioning, fit, shapes.geometric, calc}
+
+\newcommand{\numberset}{\mathbb}
+\newcommand{\N}{\numberset{N}}
+\newcommand{\Z}{\numberset{Z}}
+\newcommand{\Q}{\numberset{Q}}
+\newcommand{\R}{\numberset{R}}
+
+\begin{document}
+% Abstract of the talk at the end of the document
+
+\begin{frame}
+\begin{itemize}
+	\setlength\itemsep{1.5em}
+	\item Deep Learning
+	\item Applicazioni interessanti
+	\item Operatori neurali
+	\item Approsimazione di equazioni differenziali
+\end{itemize}
+\end{frame}
+
+\section{Deep Learning}
+\sectionpage
+
+\begin{frame}{Multi-layer Perceptron}
+    \begin{figure}
+        \begin{minipage}{0.65\textwidth}
+    \begin{tikzpicture}[
+        >=stealth,
+        shorten >=1pt,
+        auto,
+        node distance=2cm,
+        neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+        layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+    ]
+    
+        % Draw the input layer nodes
+        \foreach \name / \y in {1,...,3}
+            \node[neuron] (I-\name) at (0,-\y*2) {};
+    
+        % Draw the hidden layer nodes
+        \foreach \name / \y in {1,...,4}
+            \node[neuron] (H1-\name) at (2.5,-\y*1.5) {};
+            
+        \foreach \name / \y in {1,...,4}
+            \node[neuron] (H2-\name) at (5,-\y*1.5) {};
+    
+        % Draw the output layer node
+        \foreach \name / \y in {2,3}
+            \node[neuron] (O-\name) at (7.5,-\y*1.5) {};
+    
+        % Connect every node in the input layer with every node in the
+        % hidden layer.
+        \foreach \source in {1,...,3}
+            \foreach \dest in {1,...,4}
+                \path (I-\source) edge (H1-\dest);
+                
+        \foreach \source in {1,...,4}
+            \foreach \dest in {1,...,4}
+                \path (H1-\source) edge (H2-\dest);
+    
+        % Connect every node in the hidden layer with the output layer
+        \foreach \source in {1,...,4}
+            \foreach \dest in {2,3}
+                \path (H2-\source) edge (O-\dest);
+    \end{tikzpicture}%
+        \end{minipage}%
+        \hfill
+        \begin{minipage}{0.35\textwidth}
+        Esempio di architettura di un Multi-layer Perceptron con $3$ neuroni di input, $4$ neuroni nel primo hidden layer, $4$ neuroni nel secondo hidden layer e $2$ neuroni di output.
+        \end{minipage}
+        \end{figure}  
+\end{frame}
+
+\begin{frame}{Multi-layer Perceptron}
+    \begin{figure}
+        \begin{minipage}{0.65\textwidth}
+    \begin{tikzpicture}[
+        >=stealth,
+        shorten >=1pt,
+        auto,
+        node distance=2cm,
+        neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+        layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+    ]
+    
+        % Draw the input layer nodes
+        \foreach \name / \y in {1,...,3}
+            \node[neuron, fill=red!50, label=left:{$x_{\name}^{0}$}] (I-\name) at (0,-\y*2) {};
+    
+        % Draw the hidden layer nodes
+        \foreach \name / \y in {1,...,4}
+            \node[neuron] (H1-\name) at (2.5,-\y*1.5) {};
+            
+        \foreach \name / \y in {1,...,4}
+            \node[neuron] (H2-\name) at (5,-\y*1.5) {};
+    
+        % Draw the output layer node
+        \foreach \name / \y in {2,3}
+            \node[neuron] (O-\name) at (7.5,-\y*1.5) {};
+    
+        % Connect every node in the input layer with every node in the
+        % hidden layer.
+        \foreach \source in {1,...,3}
+            \foreach \dest in {1,...,4}
+                \path (I-\source) edge (H1-\dest);
+                
+        \foreach \source in {1,...,4}
+            \foreach \dest in {1,...,4}
+                \path (H1-\source) edge (H2-\dest);
+    
+        % Connect every node in the hidden layer with the output layer
+        \foreach \source in {1,...,4}
+            \foreach \dest in {2,3}
+                \path (H2-\source) edge (O-\dest);
+            \end{tikzpicture}%
+        \end{minipage}%
+        \hfill
+        \begin{minipage}{0.35\textwidth}
+            Layer di input con $3$ neuroni.
+        \end{minipage}
+        \end{figure}  
+\end{frame}
+
+\begin{frame}{Multi-layer Perceptron}
+    \begin{figure}
+        \begin{minipage}{0.65\textwidth}
+    \begin{tikzpicture}[
+        >=stealth,
+        shorten >=1pt,
+        auto,
+        node distance=2cm,
+        neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+        layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+    ]
+    
+        % Draw the input layer nodes
+        \foreach \name / \y in {1,...,3}
+            \node[neuron, fill=red!50, label=left:{$x_{\name}^{0}$}] (I-\name) at (0,-\y*2) {};
+    
+        % Draw the hidden layer nodes
+        \foreach \name / \y in {1}
+            \node[neuron, fill=blue!50, label=above:{$x_{\name}^{1}$}] (H1-\name) at (2.5,-\y*1.5) {};
+        \foreach \name / \y in {2,...,4}
+            \node[neuron] (H1-\name) at (2.5,-\y*1.5) {};
+            
+        \foreach \name / \y in {1,...,4}
+            \node[neuron] (H2-\name) at (5,-\y*1.5) {};
+    
+        % Draw the output layer node
+        \foreach \name / \y in {2,3}
+            \node[neuron] (O-\name) at (7.5,-\y*1.5) {};
+    
+        % Connect every node in the input layer with every node in the
+        % hidden layer.
+        \foreach \source in {1,...,3}
+            \foreach \dest in {1,...,4}
+                \path (I-\source) edge (H1-\dest);
+                
+        \foreach \source in {1,...,4}
+            \foreach \dest in {1,...,4}
+                \path (H1-\source) edge (H2-\dest);
+    
+        % Connect every node in the hidden layer with the output layer
+        \foreach \source in {1,...,4}
+            \foreach \dest in {2,3}
+                \path (H2-\source) edge (O-\dest);
+            \end{tikzpicture}%
+        \end{minipage}%
+        \hfill
+        \begin{minipage}{0.35\textwidth}
+        Vogliamo definire il valore del neurone $x_{1}^{1}$.
+        \end{minipage}
+        \end{figure}  
+\end{frame}
+
+\begin{frame}{Multi-layer Perceptron}
+    \begin{figure}
+        \begin{minipage}{0.65\textwidth}
+    \begin{tikzpicture}[
+        >=stealth,
+        shorten >=1pt,
+        auto,
+        node distance=2cm,
+        neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+        layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+    ]
+    
+        % Draw the input layer nodes
+        \foreach \name / \y in {1,...,3}
+            \node[neuron, fill=red!50, label=left:{$x_{\name}^{0}$}] (I-\name) at (0,-\y*2) {};
+    
+        % Draw the hidden layer nodes
+        \foreach \name / \y in {1}
+            \node[neuron, fill=blue!50, label=above:{$x_{\name}^{1}$}] (H1-\name) at (2.5,-\y*1.5) {};
+        \foreach \name / \y in {2,...,4}
+            \node[neuron] (H1-\name) at (2.5,-\y*1.5) {};
+            
+        \foreach \name / \y in {1,...,4}
+            \node[neuron] (H2-\name) at (5,-\y*1.5) {};
+    
+        % Draw the output layer node
+        \foreach \name / \y in {2,3}
+            \node[neuron] (O-\name) at (7.5,-\y*1.5) {};
+    
+        % Connect every node in the input layer with every node in the
+        % hidden layer.
+        \foreach \source in {1,...,3}
+            \foreach \dest in {2, ..., 4}
+                \path (I-\source) edge[draw=black!20] (H1-\dest);
+        \foreach \source in {1,...,3}
+            \foreach \dest in {1}
+				\path (I-\source) edge[draw=blue] (H1-\dest); 
+                
+        \foreach \source in {1,...,4}
+            \foreach \dest in {1,...,4}
+                \path (H1-\source) edge (H2-\dest);
+    
+        % Connect every node in the hidden layer with the output layer
+        \foreach \source in {1,...,4}
+            \foreach \dest in {2,3}
+                \path (H2-\source) edge (O-\dest);
+            \end{tikzpicture}%
+        \end{minipage}%
+        \hfill
+        \begin{minipage}{0.35\textwidth}
+        Evidenziamo le connesioni con i neuroni nel layer precedente.
+        \end{minipage}
+        \end{figure}  
+\end{frame}
+
+\begin{frame}{Multi-layer Perceptron}
+    \begin{figure}
+        \begin{minipage}{0.65\textwidth}
+    \begin{tikzpicture}[
+        >=stealth,
+        shorten >=1pt,
+        auto,
+        node distance=2cm,
+        neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+        layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+    ]
+    
+        % Draw the input layer nodes
+        \foreach \name / \y in {1,...,3}
+            \node[neuron, fill=red!50, label=left:{$x_{\name}^{0}$}] (I-\name) at (0,-\y*2) {};
+    
+        % Draw the hidden layer nodes
+        \foreach \name / \y in {1}
+			\node[neuron, fill=blue!50, label=above:{$x_{\name}^{1}$}, label=below:{$b_{\name}^{1}$}] (H1-\name) at (2.5,-\y*1.5) {};
+        \foreach \name / \y in {2,...,4}
+            \node[neuron] (H1-\name) at (2.5,-\y*1.5) {};
+            
+        \foreach \name / \y in {1,...,4}
+            \node[neuron] (H2-\name) at (5,-\y*1.5) {};
+    
+        % Draw the output layer node
+        \foreach \name / \y in {2,3}
+            \node[neuron] (O-\name) at (7.5,-\y*1.5) {};
+    
+        % Connect every node in the input layer with every node in the
+        % hidden layer.
+        \foreach \source in {1,...,3}
+            \foreach \dest in {2, ..., 4}
+                \path (I-\source) edge[draw=black!20] (H1-\dest);
+        \foreach \source in {1,...,3}
+            \foreach \dest in {1}
+				\path (I-\source) edge[draw=blue] node[midway, above, sloped, text=blue] {$w_{\dest\source}$} (H1-\dest); 
+                
+        \foreach \source in {1,...,4}
+            \foreach \dest in {1,...,4}
+                \path (H1-\source) edge (H2-\dest);
+    
+        % Connect every node in the hidden layer with the output layer
+        \foreach \source in {1,...,4}
+            \foreach \dest in {2,3}
+                \path (H2-\source) edge (O-\dest);
+    \end{tikzpicture}%
+\end{minipage}%
+\hfill
+\begin{minipage}{0.35\textwidth}
+    \[x_{1}^{1} = \sigma\left( b_{1}^{1} + \sum_{i=1}^{3} w_{1i}x_{i}^{0}\right)\]
+\end{minipage}
+\end{figure}  
+\end{frame}
+
+
+\begin{frame}{Multi-layer Perceptron}
+    \begin{figure}
+        \begin{minipage}{0.65\textwidth}
+    \begin{tikzpicture}[
+        >=stealth,
+        shorten >=1pt,
+        auto,
+        node distance=2cm,
+        neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+        layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+    ]
+    
+        % Draw the input layer nodes
+        \foreach \name / \y in {1,...,3}
+            \node[neuron, fill=red!50, label=left:{$x_{\name}^{0}$}] (I-\name) at (0,-\y*2) {};
+    
+        % Draw the hidden layer nodes
+        \foreach \name / \y in {2}
+			\node[neuron, fill=red!50, label=above:{$x_{\name}^{1}$}, label=below:{$b_{\name}^{1}$}] (H1-\name) at (2.5,-\y*1.5) {};
+        \foreach \name / \y in {1, 3, 4}
+            \node[neuron] (H1-\name) at (2.5,-\y*1.5) {};
+            
+        \foreach \name / \y in {1,...,4}
+            \node[neuron] (H2-\name) at (5,-\y*1.5) {};
+    
+        % Draw the output layer node
+        \foreach \name / \y in {2,3}
+            \node[neuron] (O-\name) at (7.5,-\y*1.5) {};
+    
+        % Connect every node in the input layer with every node in the
+        % hidden layer.
+        \foreach \source in {1,...,3}
+            \foreach \dest in {1, 3, 4}
+                \path (I-\source) edge[draw=black!20] (H1-\dest);
+        \foreach \source in {1,...,3}
+            \foreach \dest in {2}
+				\path (I-\source) edge[draw=red] node[midway, above, sloped, text=red] {$w_{\dest\source}$} (H1-\dest); 
+                
+        \foreach \source in {1,...,4}
+            \foreach \dest in {1,...,4}
+                \path (H1-\source) edge (H2-\dest);
+    
+        % Connect every node in the hidden layer with the output layer
+        \foreach \source in {1,...,4}
+            \foreach \dest in {2,3}
+                \path (H2-\source) edge (O-\dest);
+    \end{tikzpicture}%
+\end{minipage}%
+\hfill
+\begin{minipage}{0.35\textwidth}
+    \[x_{1}^{1} = \sigma\left(b_{1}^{1} +\sum_{i=1}^{3} w_{1i}x_{i}^{0} \right) \]
+    \[x_{2}^{1} = \sigma\left( b_{2}^{1}+\sum_{i=1}^{4} w_{2i}x_{i}^{0} \right) \]
+\end{minipage}
+\end{figure}  
+\end{frame}
+
+
+\begin{frame}{Multi-layer Perceptron}
+    \begin{figure}
+        \begin{minipage}{0.65\textwidth}
+    \begin{tikzpicture}[
+        >=stealth,
+        shorten >=1pt,
+        auto,
+        node distance=2cm,
+        neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+        layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+    ]
+    
+        % Draw the input layer nodes
+        \foreach \name / \y in {1,...,3}
+            \node[neuron, fill=red!50, label=left:{$x_{\name}^{0}$}] (I-\name) at (0,-\y*2) {};
+    
+        % Draw the hidden layer nodes
+        \foreach \name / \y in {3}
+			\node[neuron, fill=green!50, label=above:{$x_{\name}^{1}$}, label=below:{$b_{\name}^{1}$}] (H1-\name) at (2.5,-\y*1.5) {};
+        \foreach \name / \y in {1, 2, 4}
+            \node[neuron] (H1-\name) at (2.5,-\y*1.5) {};
+            
+        \foreach \name / \y in {1,...,4}
+            \node[neuron] (H2-\name) at (5,-\y*1.5) {};
+    
+        % Draw the output layer node
+        \foreach \name / \y in {2,3}
+            \node[neuron] (O-\name) at (7.5,-\y*1.5) {};
+    
+        % Connect every node in the input layer with every node in the
+        % hidden layer.
+        \foreach \source in {1,...,3}
+            \foreach \dest in {1, 2, 4}
+                \path (I-\source) edge[draw=black!20] (H1-\dest);
+        \foreach \source in {1,...,3}
+            \foreach \dest in {3}
+				\path (I-\source) edge[draw=green] node[midway, above, sloped, text=green] {$w_{\dest\source}$} (H1-\dest); 
+                
+        \foreach \source in {1,...,4}
+            \foreach \dest in {1,...,4}
+                \path (H1-\source) edge (H2-\dest);
+    
+        % Connect every node in the hidden layer with the output layer
+        \foreach \source in {1,...,4}
+            \foreach \dest in {2,3}
+                \path (H2-\source) edge (O-\dest);
+    \end{tikzpicture}%
+\end{minipage}%
+\hfill
+\begin{minipage}{0.35\textwidth}
+    \[x_{1}^{1} = \sigma\left(b_{1}^{1}+\sum_{i=1}^{3} w_{1i}x_{i}^{0} \right) \]
+    \[x_{2}^{1} = \sigma\left(b_{2}^{1}+\sum_{i=1}^{4} w_{2i}x_{i}^{0} \right) \]
+    \[x_{3}^{1} = \sigma\left(b_{3}^{1}+\sum_{i=1}^{4} w_{3i}x_{i}^{0} \right) \]
+\end{minipage}
+\end{figure}  
+\end{frame}
+
+
+\begin{frame}{Multi-layer Perceptron}
+    \begin{figure}
+        \begin{minipage}{0.65\textwidth}
+    \begin{tikzpicture}[
+        >=stealth,
+        shorten >=1pt,
+        auto,
+        node distance=2cm,
+        neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+        layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+    ]
+    
+        % Draw the input layer nodes
+        \foreach \name / \y in {1,...,3}
+            \node[neuron, fill=red!50, label=left:{$x_{\name}^{0}$}] (I-\name) at (0,-\y*2) {};
+    
+        % Draw the hidden layer nodes
+        \foreach \name / \y in {4}
+			\node[neuron, fill=purple!50, label=above:{$x_{\name}^{1}$}, label=below:{$b_{\name}^{1}$}] (H1-\name) at (2.5,-\y*1.5) {};
+        \foreach \name / \y in {1, ..., 3}
+            \node[neuron] (H1-\name) at (2.5,-\y*1.5) {};
+            
+        \foreach \name / \y in {1,...,4}
+            \node[neuron] (H2-\name) at (5,-\y*1.5) {};
+    
+        % Draw the output layer node
+        \foreach \name / \y in {2,3}
+            \node[neuron] (O-\name) at (7.5,-\y*1.5) {};
+    
+        % Connect every node in the input layer with every node in the
+        % hidden layer.
+        \foreach \source in {1,...,3}
+            \foreach \dest in {1, ..., 3}
+                \path (I-\source) edge[draw=black!20] (H1-\dest);
+        \foreach \source in {1,...,3}
+            \foreach \dest in {4}
+				\path (I-\source) edge[draw=purple] node[midway, above, sloped, text=purple] {$w_{\dest\source}$} (H1-\dest); 
+                
+        \foreach \source in {1,...,4}
+            \foreach \dest in {1,...,4}
+                \path (H1-\source) edge (H2-\dest);
+    
+        % Connect every node in the hidden layer with the output layer
+        \foreach \source in {1,...,4}
+            \foreach \dest in {2,3}
+                \path (H2-\source) edge (O-\dest);
+    \end{tikzpicture}%
+\end{minipage}%
+\hfill
+\begin{minipage}{0.35\textwidth}
+    \vspace{-1cm}
+    \[x_{1}^{1} = \sigma\left(b_{1}^{1}+\sum_{i=1}^{3} w_{1i}x_{i}^{0} \right) \]
+    \[x_{2}^{1} = \sigma\left(b_{2}^{1}+\sum_{i=1}^{4} w_{2i}x_{i}^{0} \right) \]
+    \[x_{3}^{1} = \sigma\left(b_{3}^{1}+\sum_{i=1}^{4} w_{3i}x_{i}^{0} \right) \]
+    \[x_{4}^{1} = \sigma\left(b_{4}^{1}+\sum_{i=1}^{2} w_{4i}x_{i}^{0} \right) \]
+\end{minipage}
+\end{figure}  
+\end{frame}
+
+
+\begin{frame}{Multi-layer Perceptron}
+    \begin{figure}
+        \begin{minipage}{0.65\textwidth}
+    \begin{tikzpicture}[
+        >=stealth,
+        shorten >=1pt,
+        auto,
+        node distance=2cm,
+        neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+        layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+    ]
+    
+        % Draw the input layer nodes
+        \foreach \name / \y in {1,...,3}
+            \node[neuron, fill=red!50, label=left:{$x_{\name}^{0}$}] (I-\name) at (0,-\y*2) {};
+    
+        % Draw the hidden layer nodes
+        \foreach \name / \y in {1}
+			\node[neuron, fill=blue!50, label=above:{$x_{\name}^{1}$}] (H1-\name) at (2.5,-\y*1.5) {};
+        \foreach \name / \y in {2}
+			\node[neuron, fill=red!50, label=above:{$x_{\name}^{1}$}] (H1-\name) at (2.5,-\y*1.5) {};
+        \foreach \name / \y in {3}
+			\node[neuron, fill=green!50, label=above:{$x_{\name}^{1}$}] (H1-\name) at (2.5,-\y*1.5) {};
+        \foreach \name / \y in {4}
+			\node[neuron, fill=purple!50, label=above:{$x_{\name}^{1}$}] (H1-\name) at (2.5,-\y*1.5) {};
+            
+        \foreach \name / \y in {1,...,4}
+            \node[neuron] (H2-\name) at (5,-\y*1.5) {};
+    
+        % Draw the output layer node
+        \foreach \name / \y in {2,3}
+            \node[neuron] (O-\name) at (7.5,-\y*1.5) {};
+    
+        % Connect every node in the input layer with every node in the
+        % hidden layer.
+        \foreach \source in {1,...,3}
+            \foreach \dest in {1}
+				\path (I-\source) edge[draw=blue]  (H1-\dest); 
+        \foreach \source in {1,...,3}
+            \foreach \dest in {2}
+				\path (I-\source) edge[draw=red] (H1-\dest); 
+        \foreach \source in {1,...,3}
+            \foreach \dest in {3}
+				\path (I-\source) edge[draw=green] (H1-\dest); 
+        \foreach \source in {1,...,3}
+            \foreach \dest in {4}
+				\path (I-\source) edge[draw=purple]  (H1-\dest); 
+                
+        \foreach \source in {1,...,4}
+            \foreach \dest in {1,...,4}
+                \path (H1-\source) edge (H2-\dest);
+    
+        % Connect every node in the hidden layer with the output layer
+        \foreach \source in {1,...,4}
+            \foreach \dest in {2,3}
+                \path (H2-\source) edge (O-\dest);
+    \end{tikzpicture}%
+\end{minipage}%
+\hfill
+\begin{minipage}{0.35\textwidth}
+    Dato $\mathbf{x}^{0} \in \R^{3}$
+    \[
+    \mathbf{x}^{1} := \sigma\left( \mathbf{W}_{1} \mathbf{x}^{0} + \mathbf{b}_{1} \right) \in \R^{4}
+    \]
+    con $\mathbf{W}\in \R^{4\times 3}$, $\mathbf{b}\in \R^{4}$ e $\sigma$ funzione di attivazione non lineare applicata componente per componente.
+\end{minipage}
+\end{figure}  
+\end{frame}
+
+
+\begin{frame}{Multi-layer Perceptron}
+    \begin{figure}
+        \begin{minipage}{0.65\textwidth}
+    \begin{tikzpicture}[
+        >=stealth,
+        shorten >=1pt,
+        auto,
+        node distance=2cm,
+        neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+        layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+    ]
+    
+        % Draw the input layer nodes
+        \foreach \name / \y in {1,...,3}
+            \node[neuron] (I-\name) at (0,-\y*2) {};
+    
+        % Draw the hidden layer nodes
+        \foreach \name / \y in {1, ..., 4}
+			\node[neuron, fill=red!50, label=above:{$x_{\name}^{1}$}] (H1-\name) at (2.5,-\y*1.5) {};
+            
+        \foreach \name / \y in {1}
+			\node[neuron, fill=blue!50, label=above:{$x_{\name}^{2}$}] (H2-\name) at (5,-\y*1.5) {};
+        \foreach \name / \y in {2}
+			\node[neuron, fill=red!50, label=above:{$x_{\name}^{2}$}] (H2-\name) at (5,-\y*1.5) {};
+        \foreach \name / \y in {3}
+			\node[neuron, fill=green!50, label=above:{$x_{\name}^{2}$}] (H2-\name) at (5,-\y*1.5) {};
+        \foreach \name / \y in {4}
+			\node[neuron, fill=purple!50, label=above:{$x_{\name}^{2}$}] (H2-\name) at (5,-\y*1.5) {};
+    
+        % Draw the output layer node
+        \foreach \name / \y in {2,3}
+            \node[neuron] (O-\name) at (7.5,-\y*1.5) {};
+    
+        % Connect every node in the input layer with every node in the
+        % hidden layer.
+        \foreach \source in {1,...,3}
+            \foreach \dest in {1,...,4}
+                \path (I-\source) edge (H1-\dest);
+    
+        \foreach \source in {1,...,4}
+            \foreach \dest in {1}
+				\path (H1-\source) edge[draw=blue] (H2-\dest); 
+        \foreach \source in {1,...,4}
+            \foreach \dest in {2}
+				\path (H1-\source) edge[draw=red] (H2-\dest); 
+        \foreach \source in {1,...,4}
+            \foreach \dest in {3}
+				\path (H1-\source) edge[draw=green] (H2-\dest); 
+        \foreach \source in {1,...,4}
+            \foreach \dest in {4}
+				\path (H1-\source) edge[draw=purple] (H2-\dest); 
+                
+        % Connect every node in the hidden layer with the output layer
+        \foreach \source in {1,...,4}
+            \foreach \dest in {2,3}
+                \path (H2-\source) edge (O-\dest);
+    \end{tikzpicture}%
+\end{minipage}%
+\hfill
+\begin{minipage}{0.35\textwidth}
+    Dato $\mathbf{x}^{0} \in \R^{3}$
+    \[
+    \mathbf{x}^{1} := \sigma\left( \mathbf{W}_{1} \mathbf{x}^{0} + \mathbf{b}_{1} \right) \in \R^{4}
+    \]
+    \[
+    \mathbf{x}^{2} := \sigma\left( \mathbf{W}_{2} \mathbf{x}^{1} + \mathbf{b}_{2} \right) \in \R^{4}
+    \]
+    con $\mathbf{W}_{2} \in \R^{4\times 4}$ e $\mathbf{b}\in \R^{4}$.
+\end{minipage}
+\end{figure}  
+\end{frame}
+
+
+\begin{frame}{Multi-layer Perceptron}
+    \begin{figure}
+        \begin{minipage}{0.65\textwidth}
+    \begin{tikzpicture}[
+        >=stealth,
+        shorten >=1pt,
+        auto,
+        node distance=2cm,
+        neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+        layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+    ]
+    
+        % Draw the input layer nodes
+        \foreach \name / \y in {1,...,3}
+            \node[neuron] (I-\name) at (0,-\y*2) {};
+    
+        % Draw the hidden layer nodes
+        \foreach \name / \y in {1, ..., 4}
+			\node[neuron] (H1-\name) at (2.5,-\y*1.5) {};
+            
+        \foreach \name / \y in {1, ..., 4}
+			\node[neuron, fill=red!50, label=above:{$x_{\name}^{2}$}] (H2-\name) at (5,-\y*1.5) {};
+    
+        % Draw the output layer node
+        \foreach \name / \y in {2}
+			\node[neuron, fill=blue!50, label=above:{$x_{\name}^{3}$}] (O-\name) at (7.5,-\y*1.5) {};
+        \foreach \name / \y in {3}
+			\node[neuron, fill=green!50, label=above:{$x_{\name}^{3}$}] (O-\name) at (7.5,-\y*1.5) {};
+    
+        % Connect every node in the input layer with every node in the
+        % hidden layer.
+        \foreach \source in {1,...,3}
+            \foreach \dest in {1,...,4}
+                \path (I-\source) edge (H1-\dest);
+    
+        \foreach \source in {1,...,4}
+            \foreach \dest in {1,...,4}
+                \path (H1-\source) edge (H2-\dest);
+                
+        % Connect every node in the hidden layer with the output layer
+        \foreach \source in {1,...,4}
+            \foreach \dest in {2}
+				\path (H2-\source) edge[draw=blue] (O-\dest); 
+        \foreach \source in {1,...,4}
+            \foreach \dest in {3}
+				\path (H2-\source) edge[draw=green] (O-\dest); 
+    \end{tikzpicture}%
+\end{minipage}%
+\hfill
+\begin{minipage}{0.35\textwidth}
+    Dato $\mathbf{x}^{0} \in \R^{3}$
+    \[
+    \mathbf{x}^{1} := \sigma\left( \mathbf{W}_{1} \mathbf{x}^{0} + \mathbf{b}_{1} \right) \in \R^{4}
+    \]
+    \[
+    \mathbf{x}^{2} := \sigma\left( \mathbf{W}_{2} \mathbf{x}^{1} + \mathbf{b}_{2} \right) \in \R^{4}
+    \]
+    \[
+    \mathbf{x}^{3} := \sigma\left( \mathbf{W}_{3} \mathbf{x}^{2} + \mathbf{b}_{3} \right) \in \R^{2}
+    \]
+    con $\mathbf{W}_{3}\in \R^{2\times 4}$ e $\mathbf{b}\in \R^{2}$.
+\end{minipage}
+\end{figure}  
+\end{frame}
+
+\begin{frame}{Multi-layer Perceptron}
+ \begin{definition}{Multi-layer Perceptron}
+  Un Multi-layer Perceptron (MLP) con input $\mathbf{x}^{0}\in \R^{d_{0}}$, $L$ hidden layers con $d_{1}, \ldots, d_{L}$ neuroni e output $\mathbf{x}^{L}\in \R^{d_{L}}$ è definito come
+    \begin{align*}
+     \mathbf{x}^{1} &:= \sigma\left( \mathbf{W}_{1} \mathbf{x}^{0} + \mathbf{b}_{1} \right) \in \R^{d_{1}} \\
+     &\vdots \\
+     \mathbf{x}^{L} &:= \sigma\left( \mathbf{W}_{L} \mathbf{x}^{L-1} + \mathbf{b}_{L} \right) \in \R^{d_{L}}
+    \end{align*}
+    dove $\mathbf{W}_{\ell}\in \R^{d_{\ell}\times d_{\ell-1}}$ e $\mathbf{b}_{\ell}\in \R^{d_{\ell}}$ per $\ell=1,\ldots, L$ e $\sigma$ è una funzione di attivazione non lineare applicata componente per componente.
+ \end{definition}
+\end{frame}
+
+\begin{frame}{Architetture diverse per problemi diversi}
+
+\end{frame}
+
+\begin{frame}{Transformer}
+
+\end{frame}
+
+\section{Applicazioni interessanti}
+\sectionpage
+
+\begin{frame}{Applicazioni alle immagini}
+    Esistono molte applicazioni per la generazione di immagini come \href{https://openai.com/index/dall-e-3/}{DALL-E3}, \href{https://www.midjourney.com/home}{Midjourney} e \href{https://ideogram.ai/t/top/1}{Ideogram}
+        \begin{center}
+            \begin{minipage}{0.23\textwidth}
+                \includegraphics[height=0.7\textheight, width=\textwidth]{ideogram1.png}
+            \end{minipage}%
+            \hfill
+            \begin{minipage}{0.23\textwidth}
+                \includegraphics[height=0.7\textheight, width=\textwidth]{ideogram2.png}
+            \end{minipage}%
+            \hfill
+            \begin{minipage}{0.23\textwidth}
+                \includegraphics[height=0.7\textheight, width=\textwidth]{ideogram4.jpg}
+            \end{minipage}%
+            \hfill
+            \begin{minipage}{0.23\textwidth}
+                \includegraphics[height=0.7\textheight, width=\textwidth]{ideogram3.png}
+            \end{minipage}
+        \end{center}
+\end{frame}
+
+\begin{frame}{Applicazioni ai video}
+    Deep learning per la generazione di video \href{https://openai.com/index/sora/}{SORA} o per modificare video anche in tempo reale \href{https://www.nvidia.com/it-it/geforce/broadcasting/broadcast-app/}{NVIDIA Broadcast}.
+    \vspace{-0.6cm}
+    \begin{columns}[T] % align columns
+        \begin{column}{.33\textwidth}
+            \begin{center}
+                % \includemovie[autostart,loop,poster]{0.8\textwidth}{0.7\textheight}{sora1.mp4}
+                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{sora1-img.png}}{sora1.mp4}
+            \end{center}
+        \end{column}%
+        \begin{column}{.33\textwidth}
+            \begin{center}
+                % \includemovie[autostart,loop,poster]{0.8\textwidth}{0.7\textheight}{sora2.mp4}
+                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{sora2-img.png}}{sora2.mp4}
+            \end{center}
+        \end{column}%
+        \begin{column}{.33\textwidth}
+            \begin{center}
+                % \includemovie[autostart,loop,poster]{0.8\textwidth}{0.7\textheight}{sora5.mp4}
+                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{sora5-img.png}}{sora5.mp4}
+            \end{center}
+        \end{column}
+    \end{columns}
+
+    \begin{columns}[T] % align columns
+        \begin{column}{.33\textwidth}
+            \begin{center}
+                % \includemovie[autostart,loop,poster]{0.8\textwidth}{0.7\textheight}{sora3.mp4}
+                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{sora3-img.png}}{sora3.mp4}
+            \end{center}
+        \end{column}%
+        \begin{column}{.33\textwidth}
+            \begin{center}
+                % \includemovie[autostart,loop,poster]{0.8\textwidth}{0.7\textheight}{sora4.mp4}
+                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{sora4-img.png}}{sora4.mp4}
+            \end{center}
+        \end{column}%
+        \begin{column}{.33\textwidth}
+            \begin{center}
+                % \includemovie[autostart,loop,poster]{0.8\textwidth}{0.7\textheight}{sora6.mp4}
+                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{sora6-img.png}}{sora6.mp4}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\section{Operatori neurali}
+\sectionpage
+
+\begin{frame}{Deep Operator Network}
+\begin{center}
+    \begin{tikzpicture}
+        \node (branch) [label={[font=\footnotesize]left:$\mathbf{f}_i = \begin{bmatrix} f_i(x_1) \\ \vdots \\ f_i(x_m) \end{bmatrix} \in \R^m$}, label={[font = \small]above:Branch Network}, font=\footnotesize]{
+            \begin{tikzpicture}[
+            >=stealth,
+            shorten >=1pt,
+            auto,
+            node distance=2cm,
+            neuron/.style={circle, fill=orange!25, minimum size=7pt, inner sep=0pt},
+            layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+        ]
+            \def\altezza{0.5};
+            \def\larghezza{1};
+            % Draw the input layer nodes
+            \foreach \name / \y in {1,...,3}
+                \node[neuron] (I-\name) at (0,-\y*\altezza-\altezza/2) {};
+        
+            % Draw the hidden layer nodes
+            \foreach \name / \y in {1,...,4}
+                \node[neuron] (H1-\name) at (\larghezza,-\y*\altezza) {};
+                
+            \foreach \name / \y in {1,...,4}
+                \node[neuron] (H2-\name) at (\larghezza*2,-\y*\altezza) {};
+        
+            % Draw the output layer node
+            \foreach \name / \y in {2,3}
+                \node[neuron] (O-\name) at (\larghezza*3,-\y*\altezza) {};
+        
+            % Connect every node in the input layer with every node in the
+            % hidden layer.
+            \foreach \source in {1,...,3}
+                \foreach \dest in {1,...,4}
+                    \path (I-\source) edge (H1-\dest);
+                    
+            \foreach \source in {1,...,4}
+                \foreach \dest in {1,...,4}
+                    \path (H1-\source) edge (H2-\dest);
+        
+            % Connect every node in the hidden layer with the output layer
+            \foreach \source in {1,...,4}
+                \foreach \dest in {2,3}
+                    \path (H2-\source) edge (O-\dest);
+        \end{tikzpicture}%
+        };%
+        \node[below=0.5cm of branch, label={[font=\footnotesize]left:$\mathbf{y} = \begin{bmatrix} y_1 \\ \vdots \\ y_d \end{bmatrix} \in \Omega    \subset \R^d$}, label={[font=\small]below:Trunk Network}, font=\footnotesize] (trunk) {
+        \begin{tikzpicture}[
+            >=stealth,
+            shorten >=1pt,
+            auto,
+            node distance=2cm,
+            neuron/.style={circle, fill=orange!25, minimum size=7pt, inner sep=0pt},
+            layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+            % node_prod/.style={draw, circle, fill=white, inner sep=0pt, minimum size=6mm},
+        ]
+            \def\altezza{0.5};
+            \def\larghezza{1};
+            % Draw the input layer nodes
+            \foreach \name / \y in {1,...,4}
+                \node[neuron] (I-\name) at (0,-\y*\altezza) {};
+        
+            % Draw the hidden layer nodes
+            \foreach \name / \y in {1,...,5}
+                \node[neuron] (H1-\name) at (\larghezza,-\y*\altezza + \altezza/2) {};
+                
+            \foreach \name / \y in {1,...,6}
+                \node[neuron] (H2-\name) at (\larghezza*2,-\y*\altezza + \altezza) {};
+        
+            \foreach \name / \y in {1,...,5}
+                \node[neuron] (H3-\name) at (\larghezza*3,-\y*\altezza + \altezza/2) {};
+
+            % Draw the output layer node
+            \foreach \name / \y in {2,3}
+                \node[neuron] (O-\name) at (\larghezza*4,-\y*\altezza) {};
+        
+            % Connect every node in the input layer with every node in the
+            % hidden layer.
+            \foreach \source in {1,...,4}
+                \foreach \dest in {1,...,5}
+                    \path (I-\source) edge (H1-\dest);
+                    
+            \foreach \source in {1,...,5}
+                \foreach \dest in {1,...,6}
+                    \path (H1-\source) edge (H2-\dest);
+        
+            \foreach \source in {1,...,6}
+                \foreach \dest in {1,...,5}
+                    \path (H2-\source) edge (H3-\dest);
+
+            % Connect every node in the hidden layer with the output layer
+            \foreach \source in {1,...,5}
+                \foreach \dest in {2,3}
+                    \path (H3-\source) edge (O-\dest);
+        \end{tikzpicture}%
+    };%
+    \node (middle) at ($($(branch.east)+(1, 0)$)!0.5!($(trunk.east)+(1, 0)$)$) {}; % middle node
+    \draw[->] (branch.east) -- ($(middle.north)-(0.1, -0.1)$); % arrow from the end of the first diagram
+    \draw[->] (trunk.east) -- ($(middle.south)-(0.1, 0.1)$); % arrow from the end of the second diagram
+    \node[draw, circle, fill=white, inner sep = 0pt, minimum size = 4mm, font = \footnotesize] (node_prod) at (middle) {$\times$};
+    \node (label) at ($(middle)+(1,0)$) [label=right:{$\mathcal{G}(\mathbf{f}_i)(\mathbf{y})$}, font=\footnotesize] {}; % define the label node
+    \draw[->] ($(middle.east)+(0.15, 0)$) -- ($(label)+(0.2, 0)$); % draw an arrow from the middle node to the label node
+    \end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{Fourier Neural Operator}
+    \begin{center}
+    \begin{tikzpicture}
+        \tikzset{
+            box/.style={draw, rounded corners, align=center, minimum height=0.8cm, minimum width=1cm, fill=orange!30},
+            bigbox/.style={draw, rounded corners, align=center, minimum height=2cm, minimum width=1cm, fill=yellow!30},
+            node_sum/.style={draw, circle, fill=white, inner sep=0pt, minimum size=4mm},
+            every node/.style={font=\small}
+        }
+        % Nodes for the main structure
+        \node[box, label=above:{\textit{Input}}] (input) {$f(x)$};
+        \node[box, right=0.5cm of input, label=above:{\textit{Lifting}}] (lifting) { $\mathcal{P}$ };
+        \node[bigbox, right=0.5cm of lifting] (fourier1) {$\mathcal{L}_{1}$};
+        \node[bigbox, right=0.55cm of fourier1] (fourier2) {$\mathcal{L}_{t}$};
+        \node[bigbox, right=0.55cm of fourier2] (fourier3) {$\mathcal{L}_{L}$};
+        \node[box, right=0.5cm of fourier3, label=above:{\textit{Projection}}] (projection) {$\mathcal{Q}$};
+        \node[box, right=0.5cm of projection, label=above:{\textit{Output}}] (output) {$u(x)$};
+        
+        % Draw arrows between nodes
+        \draw[->, line width = .7pt] ($(input.east)+(0.05, 0)$) -- ($(lifting.west)-(0.05,0)$);
+        \draw[->, line width = .7pt] ($(lifting.east)+(0.05, 0)$) -- ($(fourier1.west)-(0.03,0)$);
+        \draw[dotted, line width = 2pt] ($(fourier1.east)+(0.1, 0)$) -- ($(fourier2.west)-(0.1,0)$);
+        \draw[dotted, line width = 2pt] ($(fourier2.east)+(0.1, 0)$) -- ($(fourier3.west)-(0.1,0)$);
+        \draw[->, line width = .7pt] ($(fourier3.east)+(0.05, 0)$) -- ($(projection.west)-(0.05,0)$);
+        \draw[->, line width = .7pt] ($(projection.east)+(0.05, 0)$) -- ($(output.west)-(0.05,0)$);
+        
+        % Annotations for the Fourier Layers
+        \node[align=center, above=0.2cm of fourier2, font=\footnotesize] { \textit{Fourier Layers} };
+        
+        % Internal structure bounding box
+        \node[draw, line width = .7pt, rounded corners, inner sep=0.15cm, fit= (fourier1) (fourier2) (fourier3)] (internal) {};
+
+        %%% Second part of the plot
+        % Internal structure bounding box
+		\node[draw, below=0.2cm of internal, rounded corners, inner sep=0.2cm, fill=yellow!30] (internal) {
+			\begin{tikzpicture}[every node/.style={font=\small}]
+				% Nodes for the internal structure
+				\node[box] (vt) {$v_{t}(x)$};
+				\node[box, right=1cm of vt] (transform) {$\mathcal{F}$};
+				\node[box, right=0.5cm of transform, fill=green!25] (nonlinear) { $ R_{\theta_t} $ };
+				\node[box, right=0.5cm of nonlinear] (invtransform) { $ \mathcal{F}^{-1} $ };
+				\node[box, below=0.8cm of nonlinear, fill=green!25] (linear) { $ W_t, b_t $ };
+
+                % Internal structure bounding box
+                \node[draw, line width = .7pt, rounded corners, inner sep=0.15cm, fit= (transform) (nonlinear) (invtransform) ] (diagonalscaling) {};
+
+				\node[node_sum, right=0.5cm of invtransform] (node_sum) {$\mathbf{+}$};
+				\node[box, right=0.5cm of node_sum] (activation) {$\sigma$};
+				\node[box, right=0.5cm of activation] (vtplusone) {$v_{t+1}(x)$};
+				
+				% Draw arrows between nodes
+				\draw[line width = .7pt] ($(vt.east)+(0.05, 0)$) -- (diagonalscaling);
+				\draw[->, line width = .7pt] ($(transform.east)+(0.05, 0)$) -- ($(nonlinear.west)-(0.05, 0)$);
+				\draw[->, line width = .7pt] ($(nonlinear.east)+(0.05, 0)$) -- ($(invtransform.west)-(0.05, 0)$);
+				\draw[->, line width = .7pt] ($(vt.south)-(0, 0.05)$) |- ($(linear.west)-(0.05, 0)$);
+				\draw[->, line width = .7pt] (diagonalscaling) -- ($(node_sum.west)-(0.05, 0)$);
+				\draw[->, line width = .7pt] ($(linear.east)+(0.05, 0)$) -| ($(node_sum.south)-(0, 0.05)$);
+				\draw[->, line width = .7pt] ($(node_sum.east)+(0.05, 0)$) -- ($(activation.west)-(0.05, 0)$);
+				\draw[->, line width = .7pt] ($(activation.east)+(0.05, 0)$) -- ($(vtplusone.west)-(0.05, 0)$);
+
+			\end{tikzpicture}
+		};
+        % Connection between the two parts
+        \draw[] ($(internal.north west)+(0.1, 0.05)$) -- (fourier2.south west);
+        \draw[] ($(internal.north east)+(-0.1, 0.05)$) -- (fourier2.south east);
+    \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\section{Approsimazione di equazioni differenziali}
+\sectionpage
+	
+\end{document}
+
+Titolo: Operatori neurali
+Sottotitolo: machine learning per matematici
+
+ABSTRACT OF THE TALK HERE:
+Negli ultimi anni, il campo dell'intelligenza artificiale ha subito una notevole evoluzione, con applicazioni sempre più diffuse in una vasta gamma di settori. Questo seminario si propone di esplorare tale evoluzione attraverso due principali argomenti. Nella prima parte, sarà presentata una panoramica del Deep Learning, evidenziando le architetture chiave e illustrando diverse applicazioni di rilievo. Successivamente, ci concentreremo sulla teoria fondamentale del machine learning, introducendo il concetto di operatori neurali e esaminando la loro utilità nell'approssimazione di soluzioni per equazioni differenziali. Attraverso esempi pratici, sarà mostrato come tali operatori possano contribuire in modo significativo alla risoluzione di problemi complessi.
+
+\begin{frame}
+	\onslide<1->{}
+	\onslide<2->{}
+	\onslide<3->{}
+\end{frame}
+
+\section{}
+\sectionpage
+
+\begin{theorem}
+\end{theorem}
