@@ -6,6 +6,7 @@
 \usepackage{enumitem}
 \usepackage{multimedia}
 \usepackage{hyperref}
+\usepackage{adjustbox}
 \usetikzlibrary{positioning, fit, shapes.geometric, calc}
 
 \newcommand{\numberset}{\mathbb}
@@ -18,17 +19,15 @@
 % Abstract of the talk at the end of the document
 
 \begin{frame}
-\begin{itemize}
-	\setlength\itemsep{1.5em}
-	\item Deep Learning
-	\item Applicazioni interessanti
-	\item Operatori neurali
-	\item Approsimazione di equazioni differenziali
-\end{itemize}
+ \tableofcontents
 \end{frame}
 
 \section{Deep Learning}
 \sectionpage
+
+\begin{frame}{Percettrone}
+ 
+\end{frame}
 
 \begin{frame}{Multi-layer Perceptron}
     \begin{figure}
@@ -688,6 +687,10 @@
  \end{definition}
 \end{frame}
 
+\begin{frame}{Metodo del gradiente}
+
+\end{frame}
+
 \begin{frame}{Architetture diverse per problemi diversi}
 
 \end{frame}
@@ -700,7 +703,7 @@
 \sectionpage
 
 \begin{frame}{Applicazioni alle immagini}
-    Esistono molte applicazioni per la generazione di immagini come \href{https://openai.com/index/dall-e-3/}{DALL-E3}, \href{https://www.midjourney.com/home}{Midjourney} e \href{https://ideogram.ai/t/top/1}{Ideogram}
+    Siti per generazione d'immagini: \href{https://openai.com/index/dall-e-3/}{DALL-E3} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logo-dall-e.png}}, \href{https://www.midjourney.com/home}{Midjourney}  \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logo-midjourney.png}} e \href{https://ideogram.ai/t/top/1}{Ideogram} \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logo-ideogram.png}}.
         \begin{center}
             \begin{minipage}{0.23\textwidth}
                 \includegraphics[height=0.7\textheight, width=\textwidth]{ideogram1.png}
@@ -721,7 +724,7 @@
 \end{frame}
 
 \begin{frame}{Applicazioni ai video}
-    Deep learning per la generazione di video \href{https://openai.com/index/sora/}{SORA} o per modificare video anche in tempo reale \href{https://www.nvidia.com/it-it/geforce/broadcasting/broadcast-app/}{NVIDIA Broadcast}.
+    Deep learning per la generazione di video \href{https://openai.com/index/sora/}{SORA} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logo-sora.png}} o per modificare video anche in tempo reale \href{https://www.nvidia.com/it-it/geforce/broadcasting/broadcast-app/}{NVIDIA Broadcast} \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logo-broadcast.png}}.
     \vspace{-0.6cm}
     \begin{columns}[T] % align columns
         \begin{column}{.33\textwidth}
