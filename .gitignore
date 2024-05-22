@@ -30,3 +30,5 @@ main.snm
 main.nav
 main.aux
 main.fdb_latexmk
+main.out
+main.toc
