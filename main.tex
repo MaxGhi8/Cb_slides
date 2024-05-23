@@ -279,6 +279,7 @@
         \end{column}
         \pause
         \begin{column}{0.5\textwidth}
+            \begin{center}
             \begin{tikzpicture}[
                 >=stealth,
                 shorten >=1pt,
@@ -294,7 +295,7 @@
             
                 % Draw the output layer node
                 \foreach \name / \y in {2}
-                    \node[neuron] (O-\name) at (5,-\y) {};
+                    \node[neuron] (O-\name) at (3,-\y) {};
             
                 % Connect every node in the input layer with every node in the
                 % hidden layer.
@@ -302,42 +303,153 @@
                     \foreach \dest in {2}
                         \path (I-\source) edge (O-\dest);
             \end{tikzpicture}%
-
+            \end{center}
             Ogni freccia rappresenta una connessione a cui è associato un peso, ed ogni cerchio rappresenta un neurone, a cui è associato un bias.
         \end{column}
     \end{columns}
 \end{frame}
 
-\begin{frame}
-Notiamo che se $x, y \in \lbrace 0, 1 \rbrace$ allora con il percettrone si puo' rappresentare le operazioni logiche di negazione, congiunzione e disgiunzione.
-\begin{tikzpicture}[
-    >=stealth,
-    shorten >=1pt,
-    auto,
-    node distance=2cm,
-    neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
-    layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
-]
+\begin{frame}{Percettrone}
+Notiamo che se $x_{0}, x_{1} \in \lbrace 0, 1 \rbrace$ allora con il percettrone si puo' rappresentare le operazioni logiche di negazione, congiunzione e disgiunzione.
+\begin{figure}
+    \centering
+    \begin{minipage}{0.3\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[
+                >=stealth,
+                shorten >=1pt,
+                auto,
+                node distance=2cm,
+                neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+                layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+            ]
+                % Draw the input layer nodes
+                \foreach \name / \y in {0}
+                    \node[neuron, align=center] (I-\name) at (0,-\y) {$x_{\y }$};
 
-    % Draw the input layer nodes
-    \foreach \name / \y in {1,...,3}
-        \node[neuron] (I-\name) at (0,-\y) {};
+                % Draw the output layer node
+                \foreach \name / \y in {0}
+                    \node[neuron, align=center] (O-\name) at (2, -\y) {$0$};
 
-    % Draw the output layer node
-    \foreach \name / \y in {2}
-        \node[neuron] (O-\name) at (5,-\y) {};
+                % Connect every node in the input layer with every node in the
+                % hidden layer.
+                \foreach \source in {0}
+                    \foreach \dest in {0}
+                        \path (I-\source) edge node[midway, above, sloped] {$-1$} (O-\dest);
+            \end{tikzpicture}%
+        \end{center}
+        \caption{Negazione}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.3\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[
+                >=stealth,
+                shorten >=1pt,
+                auto,
+                node distance=2cm,
+                neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+                layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+            ]
+                % Draw the input layer nodes
+                \foreach \name / \y in {0,1}
+                    \node[neuron, align=center] (I-\name) at (0,-\y) {$x_{\y }$};
 
-    % Connect every node in the input layer with every node in the
-    % hidden layer.
-    \foreach \source in {1,...,3}
-        \foreach \dest in {2}
-            \path (I-\source) edge node[midway, above, sloped, text=blue] {$w_{\dest\source}$} (O-\dest);
-\end{tikzpicture}%
+                % Draw the output layer node
+                \foreach \name / \y in {0}
+                    \node[neuron, align=center] (O-\name) at (2, -0.5-\y) {$1$};
+
+                % Connect every node in the input layer with every node in the
+                % hidden layer.
+                \foreach \source in {0}
+                    \foreach \dest in {0}
+                        \path (I-\source) edge node[midway, above, sloped] {$1$} (O-\dest);
+                \foreach \source in {1}
+                    \foreach \dest in {0}
+                        \path (I-\source) edge node[midway, below, sloped] {$1$} (O-\dest);
+            \end{tikzpicture}%
+        \end{center}
+        \caption{Congiunzione}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.3\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[
+                >=stealth,
+                shorten >=1pt,
+                auto,
+                node distance=2cm,
+                neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+                layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+            ]
+                % Draw the input layer nodes
+                \foreach \name / \y in {0,1}
+                    \node[neuron, align=center] (I-\name) at (0,-\y) {$x_{\y }$};
+
+                % Draw the output layer node
+                \foreach \name / \y in {0}
+                    \node[neuron, align=center] (O-\name) at (2, -0.5-\y) {$2$};
+
+                % Connect every node in the input layer with every node in the
+                % hidden layer.
+                \foreach \source in {0}
+                    \foreach \dest in {0}
+                        \path (I-\source) edge node[midway, above, sloped] {$1$} (O-\dest);
+                \foreach \source in {1}
+                    \foreach \dest in {0}
+                        \path (I-\source) edge node[midway, below, sloped] {$1$} (O-\dest);
+            \end{tikzpicture}%
+        \end{center}
+        \caption{Disgiunzione}
+    \end{minipage}
+\end{figure}
 
 \pause
 Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
 \end{frame}
 
+\begin{frame}{Multi-layer Perceptron}
+    Indicando lo XOR con $\times$ vale che
+    \[
+    x_{1} \times x_{2} = (x_{1} \lor x_{2}) \land \neg (x_{1} \land x_{2}) = (x_{1} \lor x_{2}) \land (\neg x_{1} \lor \neg x_{2}).
+    \]
+    \pause
+    Dunque lo possiamo rappresentare con
+    \begin{center}
+        \begin{tikzpicture}[
+            >=stealth,
+            shorten >=1pt,
+            auto,
+            node distance=2cm,
+            neuron/.style={circle, fill=black!25, minimum size=17pt, inner sep=0pt},
+            layer/.style={thick, draw=black!50, rectangle, fill=black!10, minimum height=4em},
+        ]
+            % Draw the input layer nodes
+            \foreach \name / \y in {0,1}
+                \node[neuron, align=center] (I-\name) at (0,-2*\y) {$x_{\y}$};
+
+            % Draw the hidden layer nodes
+            \foreach \name / \y in {0}
+                \node[neuron, align=center, label=above:{$x_{0} \lor x_{1}$}] (H-\name) at (3,-2*\y) {1};
+            \foreach \name / \y in {1}
+                \node[neuron, align=center, label=below:{$\neg x_{0} \land \neg x_{1}$}] (H-\name) at (3,-2*\y) {-1};
+
+            % Draw the output layer node
+            \foreach \name / \y in {0}
+                \node[neuron, align=center] (O-\name) at (6, -1-\y) {$2$};
+
+            % Connect every node in the input layer with every node in the
+            % hidden layer.
+            \path (I-0) edge node[midway, above, sloped] {$1$} (H-0);
+            \path (I-0) edge node[pos=0.3, above, sloped] {$-1$} (H-1);
+            \path (I-1) edge node[pos=0.25, above, sloped] {$1$} (H-0);
+            \path (I-1) edge node[midway, above, sloped] {$-1$} (H-1);
+
+            \path (H-0) edge node[midway, above, sloped] {$1$} (O-0);
+            \path (H-1) edge node[midway, above, sloped] {$1$} (O-0);
+        \end{tikzpicture}%
+    \end{center}
+\end{frame}
 
 \begin{frame}{Multi-layer Perceptron}
     \begin{figure}
@@ -1002,12 +1114,43 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
 
 \end{frame}
 
-\begin{frame}{Architetture diverse per problemi diversi}
+\begin{frame}{Convolutional Neural Network (CNN)}
+\begin{figure}
+    \begin{minipage}{0.7\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{CNN.png}
+    \end{minipage}%
+    \begin{minipage}{0.3\textwidth}
+        \centering
+        Reti neurali convoluzionali per l'applicazione alle immagini.
+    \end{minipage}
+\end{figure}
+\end{frame}
 
+\begin{frame}{Recurrent Neural Network (RNN)}
+    \begin{figure}
+        \begin{minipage}{0.7\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{RNN.png}
+        \end{minipage}%
+        \begin{minipage}{0.3\textwidth}
+            \centering
+            Reti neurali ricorrenti per l'applicazione al linguaggio naturale ed ai segnali, o pi\'u in generale alle quantit\'a dipendenti dal tempo.
+        \end{minipage}
+    \end{figure}
 \end{frame}
 
 \begin{frame}{Transformer}
-
+    \begin{figure}
+        \begin{minipage}{0.65\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{attention.png}
+        \end{minipage}%
+        \begin{minipage}{0.3\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{transformer.png}
+        \end{minipage}
+    \end{figure}
 \end{frame}
 
 \section{Applicazioni interessanti}
@@ -1087,7 +1230,8 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
     \item Esistono modelli open-source come \href{https://llama.meta.com/}{LLaMA-3} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logo-llama.png}} scaricabile graatuitamente dal loro sito. 
     \end{itemize}
     \pause
-    Per allenare Chat-GPT3, formata da $175$ bilioni di parametri, hanno impiegato $1023$ Nvidia A$100$ per $34$ giorni spendendo $5$ milioni di dollari.
+    Per allenare Chat-GPT3, formata da $175$ bilioni di parametri, hanno impiegato $1023$ Nvidia A$100$ per $34$ giorni spendendo $5$ milioni di dollari in corrente.
+    
     \pause
     Anche per scaricare il modello più piccolo di LLaMA $3$ $8B$ sono necessari $20$ GB di VRAM e per il modello $LLaMA$ $3$ $70B$ sono necessari $140GB$ di spazio e $160GB$ di VRAM in $FP16$.
 \end{frame}
