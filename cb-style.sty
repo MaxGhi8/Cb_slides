@@ -294,75 +294,75 @@ stretch=0.5
 	}
 \fi
 
-\AtEndDocument{% check for options
-\ifcbdraft
-	\relax
-\fi
-\ifcbpreview % we take all the info from 'preview.csv'
-	\csvreader{preview.csv}{1 = \titprev,
-							2 = \speakprev,
-							3 = \dataprev,
-							4 = \oraprev}{%
-							\let\titolopreview\titprev
-							\let\speakerpreview\speakprev
-							\let\datapreview\dataprev
-							\let\orapreview\oraprev}%
-	\def\bigbigskip{\bigskip\bigskip}%
-	\def\negskip{\vskip-1\bigskipamount}%
-	\def\negnegskip{\vskip-2\bigskipamount}%
-	\def\nc#1{\begingroup #1\endgroup}
-	\setbeamercolor{quadrato}{fg=,bg=white}%
-	\setbeamercolor{background canvas}{bg=celeste}%
-	\setbeamercolor{riga}{fg=,bg=giallo}%
-	\setbeamertemplate{headline}{%
-	\begin{beamercolorbox}[ht=5ex,dp=10ex,wd=10ex]{quadrato}
-	\end{beamercolorbox}\vspace*{-5.3333ex}
-	\begin{beamercolorbox}[ht=0.6667ex,dp=0.6667ex,wd=0.6667\paperwidth]{riga}
-	\end{beamercolorbox}\vspace*{11ex}%\hfill%
-	}
-	\setbeamertemplate{footline}{}%
+% \AtEndDocument{% check for options
+% \ifcbdraft
+% 	\relax
+% \fi
+% \ifcbpreview % we take all the info from 'preview.csv'
+% 	\csvreader{preview.csv}{1 = \titprev,
+% 							2 = \speakprev,
+% 							3 = \dataprev,
+% 							4 = \oraprev}{%
+% 							\let\titolopreview\titprev
+% 							\let\speakerpreview\speakprev
+% 							\let\datapreview\dataprev
+% 							\let\orapreview\oraprev}%
+% 	\def\bigbigskip{\bigskip\bigskip}%
+% 	\def\negskip{\vskip-1\bigskipamount}%
+% 	\def\negnegskip{\vskip-2\bigskipamount}%
+% 	\def\nc#1{\begingroup #1\endgroup}
+% 	\setbeamercolor{quadrato}{fg=,bg=white}%
+% 	\setbeamercolor{background canvas}{bg=celeste}%
+% 	\setbeamercolor{riga}{fg=,bg=giallo}%
+% 	\setbeamertemplate{headline}{%
+% 	\begin{beamercolorbox}[ht=5ex,dp=10ex,wd=10ex]{quadrato}
+% 	\end{beamercolorbox}\vspace*{-5.3333ex}
+% 	\begin{beamercolorbox}[ht=0.6667ex,dp=0.6667ex,wd=0.6667\paperwidth]{riga}
+% 	\end{beamercolorbox}\vspace*{11ex}%\hfill%
+% 	}
+% 	\setbeamertemplate{footline}{}%
 	
-	\logo{%
-	%\begin{beamercolorbox}[ht=8em,dp=5em,wd=16em,center]{quadrato}
-	\begin{picture}(0,0)
-	\put(5,265){\makebox(0,0)[rt]{\begin{tikzpicture}
-	\fill[white] (-1,-1.25) rectangle (2,1) ;
-	\fill[giallo] (-1,-1) circle[radius=5em];
-	\draw[very thick,blu] (-0.6,-0.6) circle[radius=3em];
-	\node[inner sep=1pt,clip] at (0.75,0.25) {\includegraphics[width=11em, 
-	trim=0cm 3cm 0cm 0cm]{Logo}};
-	\fill[giallo] (1.2,-0.75) rectangle (1.325,-\paperheight);
-	\end{tikzpicture}}}%
-	\end{picture}
-	%\end{beamercolorbox}
-	}
+% 	\logo{%
+% 	%\begin{beamercolorbox}[ht=8em,dp=5em,wd=16em,center]{quadrato}
+% 	\begin{picture}(0,0)
+% 	\put(5,265){\makebox(0,0)[rt]{\begin{tikzpicture}
+% 	\fill[white] (-1,-1.25) rectangle (2,1) ;
+% 	\fill[giallo] (-1,-1) circle[radius=5em];
+% 	\draw[very thick,blu] (-0.6,-0.6) circle[radius=3em];
+% 	\node[inner sep=1pt,clip] at (0.75,0.25) {\includegraphics[width=11em, 
+% 	trim=0cm 3cm 0cm 0cm]{Logo}};
+% 	\fill[giallo] (1.2,-0.75) rectangle (1.325,-\paperheight);
+% 	\end{tikzpicture}}}%
+% 	\end{picture}
+% 	%\end{beamercolorbox}
+% 	}
 	
-	\addtobeamertemplate{background}{}{
-	\begin{tikzpicture}[overlay, remember picture]
-	\node[anchor=south west, xshift=2.5ex, yshift=2.5ex] at (current 
-	page.south 
-	west) 
-	{\includegraphics[width=0.1\textwidth]{logoinv}};
-	\end{tikzpicture}
-	}
-	\begin{frame}\color{white}
+% 	\addtobeamertemplate{background}{}{
+% 	\begin{tikzpicture}[overlay, remember picture]
+% 	\node[anchor=south west, xshift=2.5ex, yshift=2.5ex] at (current 
+% 	page.south 
+% 	west) 
+% 	{\includegraphics[width=0.1\textwidth]{logoinv}};
+% 	\end{tikzpicture}
+% 	}
+% 	\begin{frame}\color{white}
 
-	\textbf{\MakeUppercase{Università degli Studi di Pavia}}
+% 	\textbf{\MakeUppercase{Università degli Studi di Pavia}}
 	
-	\bigbigskip
-	\linespread{0.75}
-	\fontsize{25}{30}\selectfont\bfseries Prossimamente a Caffè 
-	Beltrami\ldots
+% 	\bigbigskip
+% 	\linespread{0.75}
+% 	\fontsize{25}{30}\selectfont\bfseries Prossimamente a Caffè 
+% 	Beltrami\ldots
 	
-	\raggedleft
-	\bigbigskip\fontsize{20}{24}\selectfont
-	{\slshape \titolopreview}
+% 	\raggedleft
+% 	\bigbigskip\fontsize{20}{24}\selectfont
+% 	{\slshape \titolopreview}
 	
-	\bigbigskip\fontsize{22.5}{27}\selectfont
-	Ne parliamo con \textcolor{giallo}{\speakerpreview}\\[0.15ex]
-	\textcolor{purple4}{\datapreview} alle \textcolor{purple4}{\orapreview}
-	\end{frame}%
-\fi
-}
+% 	\bigbigskip\fontsize{22.5}{27}\selectfont
+% 	Ne parliamo con \textcolor{giallo}{\speakerpreview}\\[0.15ex]
+% 	\textcolor{purple4}{\datapreview} alle \textcolor{purple4}{\orapreview}
+% 	\end{frame}%
+% \fi
+% }
 
-\endinput
+% \endinput

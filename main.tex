@@ -304,7 +304,7 @@
                         \path (I-\source) edge (O-\dest);
             \end{tikzpicture}%
             \end{center}
-            Ogni freccia rappresenta una connessione a cui è associato un peso, ed ogni cerchio rappresenta un neurone, a cui è associato un bias.
+            Ogni cerchio rappresenta un neurone, a cui è associato un bias. Ogni freccia rappresenta una connessione tra ue neuroni a cui è associato un peso.
         \end{column}
     \end{columns}
 \end{frame}
@@ -1118,7 +1118,7 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
 \begin{figure}
     \begin{minipage}{0.7\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{CNN.png}
+        \includegraphics[width=\textwidth]{architectures/CNN.png}
     \end{minipage}%
     \begin{minipage}{0.3\textwidth}
         \centering
@@ -1131,7 +1131,7 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
     \begin{figure}
         \begin{minipage}{0.7\textwidth}
             \centering
-            \includegraphics[width=\textwidth]{RNN.png}
+            \includegraphics[width=\textwidth]{architectures/RNN.png}
         \end{minipage}%
         \begin{minipage}{0.3\textwidth}
             \centering
@@ -1144,13 +1144,14 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
     \begin{figure}
         \begin{minipage}{0.55\textwidth}
             \centering
-            \includegraphics[width=\textwidth]{attention.png}
+            \includegraphics[width=\textwidth]{architectures/attention.png}
         \end{minipage}%
         \hfill
         \begin{minipage}{0.3\textwidth}
             \centering
-            \includegraphics[width=\textwidth]{transformer.png}
+            \includegraphics[width=\textwidth]{architectures/transformer.png}
         \end{minipage}
+        \hfill
     \end{figure}
 \end{frame}
 
@@ -1159,46 +1160,46 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
 
 
 \begin{frame}{Applicazioni alle immagini}
-    Siti per generazione d'immagini: \href{https://openai.com/index/dall-e-3/}{DALL-E3} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logo-dall-e.png}}, \href{https://www.midjourney.com/home}{Midjourney}  \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logo-midjourney.png}} e \href{https://ideogram.ai/t/top/1}{Ideogram} \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logo-ideogram.png}}.
+    Siti per generazione d'immagini: \href{https://openai.com/index/dall-e-3/}{DALL-E3} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logos/logo-dall-e.png}}, \href{https://www.midjourney.com/home}{Midjourney}  \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logos/logo-midjourney.png}} e \href{https://ideogram.ai/t/top/1}{Ideogram} \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logos/logo-ideogram.png}}.
         \begin{center}
             \begin{minipage}{0.23\textwidth}
-                \includegraphics[height=0.7\textheight, width=\textwidth]{ideogram1.png}
+                \includegraphics[height=0.7\textheight, width=\textwidth]{AIimages/ideogram1.png}
             \end{minipage}%
             \hfill
             \begin{minipage}{0.23\textwidth}
-                \includegraphics[height=0.7\textheight, width=\textwidth]{ideogram2.png}
+                \includegraphics[height=0.7\textheight, width=\textwidth]{AIimages/ideogram2.png}
             \end{minipage}%
             \hfill
             \begin{minipage}{0.23\textwidth}
-                \includegraphics[height=0.7\textheight, width=\textwidth]{ideogram4.jpg}
+                \includegraphics[height=0.7\textheight, width=\textwidth]{AIimages/ideogram4.jpg}
             \end{minipage}%
             \hfill
             \begin{minipage}{0.23\textwidth}
-                \includegraphics[height=0.7\textheight, width=\textwidth]{ideogram3.png}
+                \includegraphics[height=0.7\textheight, width=\textwidth]{AIimages/ideogram3.png}
             \end{minipage}
         \end{center}
 \end{frame}
 
 \begin{frame}{Applicazioni ai video}
-    Deep learning per la generazione di video \href{https://openai.com/index/sora/}{SORA} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logo-sora.png}} o per modificare video anche in tempo reale \href{https://www.nvidia.com/it-it/geforce/broadcasting/broadcast-app/}{NVIDIA Broadcast} \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logo-broadcast.png}}.
+    Deep learning per la generazione di video \href{https://openai.com/index/sora/}{SORA} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logos/logo-sora.png}} o per modificare video anche in tempo reale \href{https://www.nvidia.com/it-it/geforce/broadcasting/broadcast-app/}{NVIDIA Broadcast} \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logos/logo-broadcast.png}}.
     \vspace{-0.6cm}
     \begin{columns}[T] % align columns
         \begin{column}{.33\textwidth}
             \begin{center}
                 % \includemovie[autostart,loop,poster]{0.8\textwidth}{0.7\textheight}{sora1.mp4}
-                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{sora1-img.png}}{sora1.mp4}
+                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{videos/sora1-img.png}}{videos/sora1.mp4}
             \end{center}
         \end{column}%
         \begin{column}{.33\textwidth}
             \begin{center}
                 % \includemovie[autostart,loop,poster]{0.8\textwidth}{0.7\textheight}{sora2.mp4}
-                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{sora2-img.png}}{sora2.mp4}
+                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{videos/sora2-img.png}}{videos/sora2.mp4}
             \end{center}
         \end{column}%
         \begin{column}{.33\textwidth}
             \begin{center}
                 % \includemovie[autostart,loop,poster]{0.8\textwidth}{0.7\textheight}{sora5.mp4}
-                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{sora5-img.png}}{sora5.mp4}
+                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{videos/sora5-img.png}}{videos/sora5.mp4}
             \end{center}
         \end{column}
     \end{columns}
@@ -1207,19 +1208,19 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
         \begin{column}{.33\textwidth}
             \begin{center}
                 % \includemovie[autostart,loop,poster]{0.8\textwidth}{0.7\textheight}{sora3.mp4}
-                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{sora3-img.png}}{sora3.mp4}
+                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{videos/sora3-img.png}}{videos/sora3.mp4}
             \end{center}
         \end{column}%
         \begin{column}{.33\textwidth}
             \begin{center}
                 % \includemovie[autostart,loop,poster]{0.8\textwidth}{0.7\textheight}{sora4.mp4}
-                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{sora4-img.png}}{sora4.mp4}
+                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{videos/sora4-img.png}}{videos/sora4.mp4}
             \end{center}
         \end{column}%
         \begin{column}{.33\textwidth}
             \begin{center}
                 % \includemovie[autostart,loop,poster]{0.8\textwidth}{0.7\textheight}{sora6.mp4}
-                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{sora6-img.png}}{sora6.mp4}
+                \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{videos/sora6-img.png}}{videos/sora6.mp4}
             \end{center}
         \end{column}
     \end{columns}
@@ -1227,8 +1228,8 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
 
 \begin{frame}{Applicazioni al linguaggio}
     \begin{itemize}
-    \item Modelli per la generazione di testo come \href{https://openai.com/index/gpt-4/}{GPT-4} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logo-chat-gpt4.png}} o \href{https://github.com/features/copilot}{Copilot} \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logo-copilot.png}}.
-    \item Esistono modelli open-source come \href{https://llama.meta.com/}{LLaMA-3} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logo-llama.png}} scaricabile graatuitamente dal loro sito. 
+    \item Modelli per la generazione di testo come \href{https://openai.com/index/gpt-4/}{GPT-4} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logos/logo-chat-gpt4.png}} o \href{https://github.com/features/copilot}{Copilot} \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logos/logo-copilot.png}}.
+    \item Esistono modelli open-source come \href{https://llama.meta.com/}{LLaMA-3} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logos/logo-llama.png}} scaricabile graatuitamente dal loro sito. 
     \end{itemize}
     \pause
     Per allenare Chat-GPT3, formata da $175$ bilioni di parametri, hanno impiegato $1023$ Nvidia A$100$ per $34$ giorni spendendo $5$ milioni di dollari in corrente.
