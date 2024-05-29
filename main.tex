@@ -3,6 +3,7 @@
 \usepackage{mathtools}
 %\usepackage{lmodern}
 \usepackage{soul}
+\usepackage{caption}
 % \usepackage{enumitem}
 \usepackage{multimedia}
 \usepackage{hyperref}
@@ -1238,13 +1239,52 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
     Anche per scaricare il modello più piccolo di LLaMA $3$ $8B$ sono necessari $20$ GB di VRAM e per il modello $LLaMA$ $3$ $70B$ sono necessari $140GB$ di spazio e $160GB$ di VRAM in $FP16$.
 \end{frame}
 
-\section{Operatori neurali}
+\section{Risultati teorici}
 \sectionpage
+
+\begin{frame}{Approsimazione universale per funzioni}
+    \begin{definition}
+        Sia $K \subset \R^{d}$ compatto e con $d \in \N$. Una funzione continua $f: \R \to \R$ si dice discriminante se
+        \[
+        \int_{K} f(\textbf{a}\cdot \textbf{x} +b) \ d\mu(x) = 0 \quad \forall \textbf{a} \in \R^{d},\ \forall b \in \R \quad \Rightarrow \quad \mu \equiv 0.
+        \]
+    \end{definition}
+    \pause
+    \begin{definition}
+        Una funzione continua $f: \R \to \R$ si dice sigmoidale se $ \lim_{x \to -\infty} f(x) = 0$ e $\lim_{x \to +\infty} f(x) = 1$.
+    \end{definition}
+    \pause
+    Tutte le funzioni sigmoidali sono discriminanti.
+\end{frame}
+
+\begin{frame}{Approsimazione universale per funzioni}
+\begin{theorem}
+    Sia $K \subset \R^{d}$ compatto e con $d \in \N$ e $\sigma: \R \to \R$ funzione discriminante allora $MLP(\sigma, d, 2)$ \'e denso in $C(K)$.
+\end{theorem}
+Ovvero per ogni $f \in C(K)$ e $\varepsilon > 0$ esiste una rete neurale $f_{\theta} \in MLP(\sigma, d, 2)$ tale che $\|f - f_{\theta}\|_{\infty} < \varepsilon$.
+\end{frame}
+
+\begin{frame}{Approsimazione universale per operatori}
+    \begin{theorem}
+        Sia $\sigma$ non polinomiale, $X$ spazio di Banach, $ K_1 \subset X $, $ K_2 \subset \R^d $ compatti e $ V $ compatto in $ C(K_1) $. Sia $ G: V \to C(K_2) $ un operatore continuo non lineare, allora per ogni $ \varepsilon > 0 $ esistono $ n, p, m \in \N $, $ c_i^k, \theta_i^k, \xi_{ij}^k, \zeta^k \in \R $, $ w^k \in \R^d $ e $ x_j \in K_1 $ tali che
+        \[ \left| G(u)(y) - \sum_{k=1}^{p}\sum_{i=1}^{n}c_i^k \sigma \left( \sum_{j=1}^{m} \xi_{ij}^k u(x_j) + \theta_i^k \right) \sigma(w^k \cdot y + \zeta^k) \right| < \varepsilon  \]
+        vale per ogni $ u \in V $ e $ y \in K_2 $.
+    \end{theorem}
+\end{frame}
+
+\begin{frame}{Approssimazione universale per operatori}
+    Abbiamo $ n, p, m \in \N $, $ c_i^k, \theta_i^k, \xi_{ij}^k, \zeta^k \in \R $, $ w^k \in \R^d $, $ x_j \in K_1 $, $y\in K_2 \subset \R^{d}$ e $u \in V$ tali che
+    \begin{equation}
+        \underbrace{{\color{green}\sum_{k=1}^{p}}}_{{}\text{scalar product}} \underbrace{{\color{red} \sum_{i=1}^{n}c_i^k \sigma \left( \sum_{j=1}^{m} \xi_{ij}^k u(x_j) + \theta_i^k \right)}}_{{}\text{branch net}} \underbrace{{\color{blue} \sigma(w^k \cdot y + \zeta^k)}}_{{}\text{trunk net}}.
+    \end{equation}
+    \pause
+    Dove notiamo che la branch net \'e una rete neurale con $2$ layers ed $ m $ neuroni in input e $p$ neuroni di output e la trunk net \'e una rete neurale con $1$ layer con $d$ layer di input e $p$.
+\end{frame}
 
 \begin{frame}{Deep Operator Network}
 \begin{center}
     \begin{tikzpicture}
-        \node (branch) [label={[font=\footnotesize]left:$\mathbf{f}_i = \begin{bmatrix} f_i(x_1) \\ \vdots \\ f_i(x_m) \end{bmatrix} \in \R^m$}, label={[font = \small]above:Branch Network}, font=\footnotesize]{
+        \node (branch) [label={[font=\footnotesize]left:$\mathbf{u}_i = \begin{bmatrix} u_i(x_1) \\ \vdots \\ u_i(x_m) \end{bmatrix} \in \R^m$}, label={[font = \small]above:Branch Network}, font=\footnotesize]{
             \begin{tikzpicture}[
             >=stealth,
             shorten >=1pt,
@@ -1340,11 +1380,14 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
     \draw[->] (branch.east) -- ($(middle.north)-(0.1, -0.1)$); % arrow from the end of the first diagram
     \draw[->] (trunk.east) -- ($(middle.south)-(0.1, 0.1)$); % arrow from the end of the second diagram
     \node[draw, circle, fill=white, inner sep = 0pt, minimum size = 4mm, font = \footnotesize] (node_prod) at (middle) {$\times$};
-    \node (label) at ($(middle)+(1,0)$) [label=right:{$\mathcal{G}(\mathbf{f}_i)(\mathbf{y})$}, font=\footnotesize] {}; % define the label node
+    \node (label) at ($(middle)+(1,0)$) [label=right:{$\mathcal{G}(\mathbf{u}_i)(\mathbf{y})$}, font=\footnotesize] {}; % define the label node
     \draw[->] ($(middle.east)+(0.15, 0)$) -- ($(label)+(0.2, 0)$); % draw an arrow from the middle node to the label node
     \end{tikzpicture}
 \end{center}
 \end{frame}
+
+\section{Operatori neurali}
+\sectionpage
 
 \begin{frame}{Fourier Neural Operator}
     \begin{center}
@@ -1415,9 +1458,156 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
     \end{center}
 \end{frame}
 
-\section{Approsimazione di equazioni differenziali}
-\sectionpage
-	
+\begin{frame}[t]{Transport continuous equation}
+    \[
+    u_{t} + v \cdot \nabla u = 0 \quad \text{in } \Omega \times (0, T), \quad\quad u_{0}(x, y) = f(x, y),
+    \]
+    con $f$ funzione regolare. Si fissa $v = (0.2, \, 0.2)$ e si approssima l'operatore $\mathcal{G}: f\to u_{T=1}$.
+    \begin{center}
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/contTrans/input.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/contTrans/output.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/contTrans/FNOappro.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/contTrans/error.png}
+        \end{minipage}
+    \end{center}
+    La FNO ha $21$M parametri, tempo di training di $50$ minuti, errore di test relativo in norma $L^{2}$ pari a $0.007$.
+\end{frame}
+
+\begin{frame}[t]{Transport discontinuous equation}
+    \[
+    u_{t} + v \cdot \nabla u = 0 \quad \text{in } \Omega \times (0, T), \quad\quad u_{0}(x, y) = f(x, y),
+    \]
+    con $f$ funzione discontinua. Si fissa $v = (0.2, \, 0.2)$ e si approssima l'operatore $\mathcal{G}: f\to u_{T=1}$.
+    \begin{center}
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/discTrans/input.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/discTrans/output.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/discTrans/FNOappro.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/discTrans/error.png}
+        \end{minipage}
+    \end{center}
+    La FNO ha $16$M parametri, tempo di training di $21$ ore, errore di test relativo in norma $L^{2}$ pari a $0.013$.
+\end{frame}
+
+\begin{frame}[t]{Poisson Equation}
+    \[
+    -\Delta u = f, \quad \text{in } \Omega = [0, 1]^{2}, \quad\quad u_{| \partial \Omega} = 0.
+    \]
+    Si approssima l'operatore $\mathcal{G}: f\to u$.
+    \begin{center}
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/poisson/input.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/poisson/output.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/poisson/FNOappro.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/poisson/error.png}
+        \end{minipage}
+    \end{center}
+    La FNO ha $1$M parametri, tempo di training di $20$ minuti, errore di test relativo in norma $L^{2}$ pari a $0.04$.
+\end{frame}
+
+\begin{frame}[t]{Navier-Stokes Equation}
+    \[
+    u_{t} + (u \cdot \nabla) u + \nabla p = \nu \Delta u, \qquad div \, u = 0, \quad \quad u_{0}(x, y) = f(x, y).
+    \]
+    Dove $\nu = 4 \cdot 10^{-4}$ e si approssima l'operatore soluzione $\mathcal{G}: f\to u_{T=1}$.
+    \begin{center}
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/shearLayer/input.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/shearLayer/output.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/shearLayer/FNOappro.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/shearLayer/error.png}
+        \end{minipage}
+    \end{center}
+    La FNO ha $32,8$M parametri, tempo di training di $30$ minuti, errore di test relativo in norma $L^{2}$ pari a $0.05$.
+\end{frame}
+
+\begin{frame}[t]{Wave Equation}
+    \[
+    u_{tt} -c^{2}\Delta u = 0, \quad \text{in } \Omega \times (0, T), \quad\quad u_{0}(x, y) = f(x, y).
+    \]
+    Dove $c = 0.1$ e si approssima l'operatore soluzione $\mathcal{G}: f\to u_{T=5}$.
+    \begin{center}
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/wave/input.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/wave/output.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/wave/FNOappro.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/wave/error.png}
+        \end{minipage}
+    \end{center}
+    La FNO ha $4, 9$M parametri, tempo di training di $7$ ore, errore di test relativo in norma $L^{2}$ pari a $0.014$.
+\end{frame}
+
+\begin{frame}[t]{Allen-Cahn equation}
+   \[
+   u_{t} = \Delta u - \varepsilon^{2} u (u^{2}-1).
+   \] 
+   Dove $\varepsilon = 220 $ e si approssima l'operatore soluzione $\mathcal{G}: f\to u_{T}$ con $T = 0.0002$.
+    \begin{center}
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/allen/input.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/allen/output.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/allen/FNOappro.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/allen/error.png}
+        \end{minipage}
+    \end{center}
+    La FNO ha $4, 9$M parametri, tempo di training di $2$ ore, errore di test relativo in norma $L^{2}$ pari a $0.004$.
+\end{frame}
+
 \end{document}
 
 Titolo: Operatori neurali
