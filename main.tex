@@ -412,7 +412,7 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
 \begin{frame}{Multi-layer Perceptron}
     Indicando lo XOR con $\times$ vale che
     \[
-    x_{1} \times x_{2} = (x_{1} \lor x_{2}) \land \neg (x_{1} \land x_{2}) = (x_{1} \lor x_{2}) \land (\neg x_{1} \lor \neg x_{2}).
+    x_{0} \times x_{1} = (x_{0} \lor x_{1}) \land \neg (x_{0} \land x_{1}) = (x_{0} \lor x_{1}) \land (\neg x_{0} \lor \neg x_{1}).
     \]
     \pause
     Dunque lo possiamo rappresentare con
@@ -433,7 +433,7 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
             \foreach \name / \y in {0}
                 \node[neuron, align=center, label=above:{$x_{0} \lor x_{1}$}] (H-\name) at (3,-2*\y) {1};
             \foreach \name / \y in {1}
-                \node[neuron, align=center, label=below:{$\neg x_{0} \land \neg x_{1}$}] (H-\name) at (3,-2*\y) {-1};
+                \node[neuron, align=center, label=below:{$\neg x_{0} \lor \neg x_{1}$}] (H-\name) at (3,-2*\y) {-1};
 
             % Draw the output layer node
             \foreach \name / \y in {0}
@@ -1100,7 +1100,7 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
 \end{frame}
 
 \begin{frame}{Multi-layer Perceptron}
- \begin{definition}{Multi-layer Perceptron}
+ \begin{definition}
   Un Multi-layer Perceptron (MLP) con input $\mathbf{x}^{0}\in \R^{d_{0}}$, $L$ hidden layers con $d_{1}, \ldots, d_{L}$ neuroni e output $\mathbf{x}^{L}\in \R^{d_{L}}$ è definito come
     \begin{align*}
      \mathbf{x}^{1} &:= \sigma\left( \mathbf{W}_{1} \mathbf{x}^{0} + \mathbf{b}_{1} \right) \in \R^{d_{1}} \\
@@ -1112,7 +1112,25 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
 \end{frame}
 
 \begin{frame}{Metodo del gradiente}
-
+    \begin{columns}[T] % align columns
+        \begin{column}{.65\textwidth}
+    Definito un MLP e scelta una funzione di costo $C(\mathbf{x}, \mathbf{y})$ con $\mathbf{y}$ target, si vuole minimizzare $C$ rispetto ai parametri $\mathbf{W}_{\ell}$ e $\mathbf{b}_{\ell}$. 
+    \begin{definition}
+        Il metodo del gradiente è un metodo iterativo per minimizzare una funzione $MLP(\mathbf{p})$ definita su uno spazio $\R^{d}$. Dato un punto iniziale $\mathbf{p}^{(0)}$, la sequenza $\mathbf{p}^{(t)}$ è definita come   
+        \[
+        \mathbf{p}^{(t+1)} = \mathbf{p}^{(t)} - \eta \nabla f(\mathbf{p}^{(t)})
+        \]
+        dove $\eta$ è il learning rate.
+    \end{definition}
+\end{column}%
+\pause
+\begin{column}[T]{.35\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[height = 0.6\textheight]{memes/meme1.png}
+    \end{figure}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}{Convolutional Neural Network (CNN)}
@@ -1143,17 +1161,17 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
 
 \begin{frame}{Transformer}
     \begin{figure}
-        \begin{minipage}{0.55\textwidth}
+        \begin{minipage}[T]{0.5\textwidth}
             \centering
-            \includegraphics[width=\textwidth]{architectures/attention.png}
+            \includegraphics[height=0.6\textheight]{architectures/attention.png}
         \end{minipage}%
-        \hfill
-        \begin{minipage}{0.3\textwidth}
+        \begin{minipage}[T]{0.3\textwidth}
             \centering
-            \includegraphics[width=\textwidth]{architectures/transformer.png}
+            \includegraphics[height=0.8\textheight]{architectures/transformer.png}
         \end{minipage}
-        \hfill
+        \caption*{From "Attention is All You Need", Vaswani et al. (2017)}
     \end{figure}
+    % \footnotetext*{"Attention is All You Need", Vaswani et al. (2017)}
 \end{frame}
 
 \section{Applicazioni interessanti}
@@ -1231,10 +1249,13 @@ Ma non si puo' rappresentare la disgiunzione esclusiva (XOR).
     \begin{itemize}
     \item Modelli per la generazione di testo come \href{https://openai.com/index/gpt-4/}{GPT-4} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logos/logo-chat-gpt4.png}} o \href{https://github.com/features/copilot}{Copilot} \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logos/logo-copilot.png}}.
     \item Esistono modelli open-source come \href{https://llama.meta.com/}{LLaMA-3} \adjustbox{valign=m}{\includegraphics[width=1.5cm]{logos/logo-llama.png}} scaricabile graatuitamente dal loro sito. 
-    \end{itemize}
+    \item Potete trovare modelli pre-addestrati e datasets su \href{https://huggingface.co/}{Hugging Face} \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logos/logo-hugging-face.png}} oppure su \href{https://www.kaggle.com/}{kaggle} \adjustbox{valign=m}{\includegraphics[width=0.5cm]{logos/logo-kaggle.png}}.
+\end{itemize}
     \pause
+    \vspace{0.3cm}
     Per allenare Chat-GPT3, formata da $175$ bilioni di parametri, hanno impiegato $1023$ Nvidia A$100$ per $34$ giorni spendendo $5$ milioni di dollari in corrente.
     
+    \vspace{0.3cm}
     \pause
     Anche per scaricare il modello più piccolo di LLaMA $3$ $8B$ sono necessari $20$ GB di VRAM e per il modello $LLaMA$ $3$ $70B$ sono necessari $140GB$ di spazio e $160GB$ di VRAM in $FP16$.
 \end{frame}
@@ -1389,6 +1410,19 @@ Ovvero per ogni $f \in C(K)$ e $\varepsilon > 0$ esiste una rete neurale $f_{\th
 \section{Operatori neurali}
 \sectionpage
 
+\begin{frame}{Problema di Darcy}
+    Consideriamo il problema di Darcy in due dimensioni, sottoposto a condizioni al bordo di Dirichlet omogene. L'equazione di flusso di Darcy, \'e un'equazione ellittica del secondo ordine, definita da
+    \begin{equation}
+        \begin{cases}
+            - \nabla(a \cdot \nabla u) = f,\quad &  \mathrm{in}\ D\\
+            u = 0, & \mathrm{su} \ \partial D
+        \end{cases}
+        \label{DarcyProblem}
+    \end{equation}
+    dove $ D = (0, 1)^2 $. Per questo problema $ \mathcal{A} = L^{\infty}(D, \R^+) $, $ \mathcal{U} = H^1_0(D, \R) $. Fissiamo come r.h.s $ f \equiv 1 $ e considerando la formulazione debole del problema si ha che la soluzione operatore \'e
+    \[  \mathcal{G}: L^{\infty}(D, \R^+) \to H^1_0(D, \R), \qquad \mathcal{G}:a \mapsto u. \]
+\end{frame}
+
 \begin{frame}{Fourier Neural Operator}
     \begin{center}
     \begin{tikzpicture}
@@ -1458,11 +1492,33 @@ Ovvero per ogni $f \in C(K)$ e $\varepsilon > 0$ esiste una rete neurale $f_{\th
     \end{center}
 \end{frame}
 
+\begin{frame}[t]{Darcy problem}
+    Volgiamo approssimare l'operatore soluzione $\mathcal{G}: a \mapsto u$ associato al problema di Darcy.
+    \begin{center}
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/darcy/input.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/darcy/output.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/darcy/FNOappro.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.24\textwidth}
+            \includegraphics[width=\textwidth]{operators/darcy/error.png}
+        \end{minipage}
+    \end{center}
+    La FNO ha $2,3$M parametri, tempo di training di $2$ ore, errore di test relativo in norma $L^{2}$ pari a $0.008$.
+\end{frame}
+
 \begin{frame}[t]{Transport continuous equation}
     \[
     u_{t} + v \cdot \nabla u = 0 \quad \text{in } \Omega \times (0, T), \quad\quad u_{0}(x, y) = f(x, y),
     \]
-    con $f$ funzione regolare. Si fissa $v = (0.2, \, 0.2)$ e si approssima l'operatore $\mathcal{G}: f\to u_{T=1}$.
+    con $f$ funzione regolare. Si fissa $v = (0.2, \, 0.2)$ e si approssima l'operatore $\mathcal{G}: f\mapsto u_{T=1}$.
     \begin{center}
         \begin{minipage}{0.24\textwidth}
             \includegraphics[width=\textwidth]{operators/contTrans/input.png}
@@ -1487,7 +1543,7 @@ Ovvero per ogni $f \in C(K)$ e $\varepsilon > 0$ esiste una rete neurale $f_{\th
     \[
     u_{t} + v \cdot \nabla u = 0 \quad \text{in } \Omega \times (0, T), \quad\quad u_{0}(x, y) = f(x, y),
     \]
-    con $f$ funzione discontinua. Si fissa $v = (0.2, \, 0.2)$ e si approssima l'operatore $\mathcal{G}: f\to u_{T=1}$.
+    con $f$ funzione discontinua. Si fissa $v = (0.2, \, 0.2)$ e si approssima l'operatore $\mathcal{G}: f\mapsto u_{T=1}$.
     \begin{center}
         \begin{minipage}{0.24\textwidth}
             \includegraphics[width=\textwidth]{operators/discTrans/input.png}
@@ -1512,7 +1568,7 @@ Ovvero per ogni $f \in C(K)$ e $\varepsilon > 0$ esiste una rete neurale $f_{\th
     \[
     -\Delta u = f, \quad \text{in } \Omega = [0, 1]^{2}, \quad\quad u_{| \partial \Omega} = 0.
     \]
-    Si approssima l'operatore $\mathcal{G}: f\to u$.
+    Si approssima l'operatore $\mathcal{G}: f\mapsto u$.
     \begin{center}
         \begin{minipage}{0.24\textwidth}
             \includegraphics[width=\textwidth]{operators/poisson/input.png}
@@ -1537,7 +1593,7 @@ Ovvero per ogni $f \in C(K)$ e $\varepsilon > 0$ esiste una rete neurale $f_{\th
     \[
     u_{t} + (u \cdot \nabla) u + \nabla p = \nu \Delta u, \qquad div \, u = 0, \quad \quad u_{0}(x, y) = f(x, y).
     \]
-    Dove $\nu = 4 \cdot 10^{-4}$ e si approssima l'operatore soluzione $\mathcal{G}: f\to u_{T=1}$.
+    Dove $\nu = 4 \cdot 10^{-4}$ e si approssima l'operatore soluzione $\mathcal{G}: f\mapsto u_{T=1}$.
     \begin{center}
         \begin{minipage}{0.24\textwidth}
             \includegraphics[width=\textwidth]{operators/shearLayer/input.png}
@@ -1562,7 +1618,7 @@ Ovvero per ogni $f \in C(K)$ e $\varepsilon > 0$ esiste una rete neurale $f_{\th
     \[
     u_{tt} -c^{2}\Delta u = 0, \quad \text{in } \Omega \times (0, T), \quad\quad u_{0}(x, y) = f(x, y).
     \]
-    Dove $c = 0.1$ e si approssima l'operatore soluzione $\mathcal{G}: f\to u_{T=5}$.
+    Dove $c = 0.1$ e si approssima l'operatore soluzione $\mathcal{G}: f\mapsto u_{T=5}$.
     \begin{center}
         \begin{minipage}{0.24\textwidth}
             \includegraphics[width=\textwidth]{operators/wave/input.png}
@@ -1587,7 +1643,7 @@ Ovvero per ogni $f \in C(K)$ e $\varepsilon > 0$ esiste una rete neurale $f_{\th
    \[
    u_{t} = \Delta u - \varepsilon^{2} u (u^{2}-1).
    \] 
-   Dove $\varepsilon = 220 $ e si approssima l'operatore soluzione $\mathcal{G}: f\to u_{T}$ con $T = 0.0002$.
+   Dove $\varepsilon = 220 $ e si approssima l'operatore soluzione $\mathcal{G}: f\mapsto u_{T}$ con $T = 0.0002$.
     \begin{center}
         \begin{minipage}{0.24\textwidth}
             \includegraphics[width=\textwidth]{operators/allen/input.png}
@@ -1606,6 +1662,12 @@ Ovvero per ogni $f \in C(K)$ e $\varepsilon > 0$ esiste una rete neurale $f_{\th
         \end{minipage}
     \end{center}
     La FNO ha $4, 9$M parametri, tempo di training di $2$ ore, errore di test relativo in norma $L^{2}$ pari a $0.004$.
+\end{frame}
+
+\begin{frame}
+    \centering
+    \Huge
+    Grazie per \adjustbox{valign=m}{\includegraphics[height=0.75\textheight]{architectures/attention-final.png}}
 \end{frame}
 
 \end{document}
